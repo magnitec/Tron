@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^12.11.7"
+    "@types/node": "^12.12.3",
+    "websocket": "^1.0.30"
   }
 }
