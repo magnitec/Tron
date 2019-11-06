@@ -13,7 +13,6 @@ const TextInput = ({
   "type" | "onChange"
 > & { onChange: (value: string) => void }) => (
   <div className="p-1">
-    {" "}
     <input
       className={`border border-gray-500 inline-block ${className}`}
       type="text"
