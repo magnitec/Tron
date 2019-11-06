@@ -36,7 +36,7 @@ const App = () => {
 
   useEffect(() => {
     socket && socket.on("connect", () => setMessage("Connected"));
-  }, [socket, setMessage]);
+  }, [socket]);
 
   return (
     <div className="flex flex-col flex-grow">
