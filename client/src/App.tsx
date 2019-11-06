@@ -1,34 +1,28 @@
 import React, { useState, useEffect } from "react";
 import useSocket from "./utils/useSocket";
 
-const TextInput = ({
-  className,
-  onChange,
-  ...props
-}: Omit<
-  React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >,
-  "type" | "onChange"
-> & { onChange: (value: string) => void }) => (
+interface TextInputProps {
+  className: string;
+  onChange: (value: string) => void;
+}
+
+const TextInput = ({ className, onChange }: TextInputProps) => (
   <div className="p-1">
     <input
       className={`border border-gray-500 inline-block ${className}`}
       type="text"
       onChange={({ target: { value } }) => onChange(value)}
-      {...props}
     />
   </div>
 );
 
-const Button = ({
-  className,
-  ...props
-}: React.DetailedHTMLProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
->) => (
+interface ButtonProps {
+  className: string;
+  children: React.ReactNode;
+  onClick: () => void;
+}
+
+const Button = ({ className, ...props }: ButtonProps) => (
   <div className="p-1">
     <button className={`bg-gray-300 border ${className}`} {...props} />
   </div>
