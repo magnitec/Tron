@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import useSocket from "./utils/useSocket";
 
 interface TextInputProps {
-  className: string;
+  className?: string;
   onChange: (value: string) => void;
 }
 
@@ -17,8 +17,8 @@ const TextInput = ({ className, onChange }: TextInputProps) => (
 );
 
 interface ButtonProps {
-  className: string;
-  children: React.ReactNode;
+  className?: string;
+  children?: React.ReactNode;
   onClick: () => void;
 }
 
