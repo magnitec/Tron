@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
 
-const useSocket = (): [SocketIOClient.Socket | null, (uri: string) => void] => {
+const useSocket = (): [
+  SocketIOClient.Socket | null,
+  (uri?: string) => void
+] => {
   const [socket, setSocket] = useState<SocketIOClient.Socket | null>(null);
   useEffect(() => {
     return () => {
@@ -10,7 +13,7 @@ const useSocket = (): [SocketIOClient.Socket | null, (uri: string) => void] => {
       socket.close();
     };
   }, [socket]);
-  return [socket, uri => setSocket(io(uri))];
+  return [socket, uri => setSocket(uri !== undefined ? io(uri) : null)];
 };
 
 export default useSocket;

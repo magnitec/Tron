@@ -1,9 +1,11 @@
 dependencies:
+  '@types/classnames': 2.2.9
   '@types/jest': 24.0.20
   '@types/node': 12.11.7
   '@types/react': 16.9.11
   '@types/react-dom': 16.9.3
   '@types/socket.io-client': 1.4.32
+  classnames: 2.2.6
   react: 16.11.0
   react-dom: 16.11.0_react@16.11.0
   react-scripts: 3.2.0_typescript@3.7.2
@@ -1402,6 +1404,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-CeBpmX1J8kWLcDEnI3Cl2Eo6RfbGvzUctA+CjZUhOKDFbLfcr7fc4usEqLNWetrlJd7RhAkyYe2czXop4fICpw==
+  /@types/classnames/2.2.9:
+    dev: false
+    resolution:
+      integrity: sha512-MNl+rT5UmZeilaPxAVs6YaPC2m6aA8rofviZbhbxpPpl61uKodfdQVsBtgJGTqGizEf02oW3tsVe7FYB8kK14A==
   /@types/eslint-visitor-keys/1.0.0:
     dev: false
     resolution:
@@ -2711,6 +2717,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-qOhPa/Fj7s6TY8H8esGu5QNpMMQxz79h+urzrNYN6mn+9BnxlDGf5QZ+XeCDsxSjPqsSR56XOZOJmpeurnLMeg==
+  /classnames/2.2.6:
+    dev: false
+    resolution:
+      integrity: sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
   /clean-css/4.2.1:
     dependencies:
       source-map: 0.6.1
@@ -10921,11 +10931,13 @@ packages:
     resolution:
       integrity: sha1-AI4G2AlDIMNy28L47XagymyKxBk=
 specifiers:
+  '@types/classnames': ^2.2.9
   '@types/jest': 24.0.20
   '@types/node': 12.11.7
   '@types/react': 16.9.11
   '@types/react-dom': 16.9.3
   '@types/socket.io-client': ^1.4.32
+  classnames: ^2.2.6
   react: ^16.11.0
   react-dom: ^16.11.0
   react-scripts: 3.2.0
