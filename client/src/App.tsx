@@ -29,8 +29,8 @@ const Button = ({ className, ...props }: ButtonProps) => (
 );
 
 const App = () => {
-  const [host, setHost] = useState("");
-  const [port, setPort] = useState("");
+  const [host, setHost] = useState("localhost");
+  const [port, setPort] = useState("8080");
   const [message, setMessage] = useState("Not connected");
   const [socket, setSocket] = useSocket();
 
