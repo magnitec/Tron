@@ -20,7 +20,8 @@ const TextInput = ({
   return (
     <div className="border border-gray-500 inline-block">
       <input
-        className={className}
+        style={{ transition: "background-color 0.1s ease" }}
+        className={cn("px-1", className, { "bg-gray-200": readOnly })}
         type="text"
         readOnly={readOnly}
         value={text}
@@ -45,41 +46,42 @@ const Button = ({ className = "", ...props }: ButtonProps) => (
   </div>
 );
 
+type ConnectionStatus = "idle" | "connecting" | "connected" | "reconnecting";
+
 const App = () => {
+  const [status, setStatus] = useState<ConnectionStatus>("idle");
   const [host, setHost] = useState("localhost");
   const [port, setPort] = useState("8080");
   const [attempts, setAttempts] = useState(0);
-  const [message, setMessage] = useState("Not connected");
   const [socket, setSocket] = useSocket();
 
   useEffect(() => {
-    return () => setAttempts(0);
+    if (socket === null) return;
+    setStatus("connecting");
+    socket.on("connect", () => setStatus("connected"));
+
+    return () => setStatus("idle");
   }, [socket]);
 
   useEffect(() => {
-    socket && socket.on("connect", () => setMessage("Connected"));
-  }, [socket]);
-
-  useEffect(() => {
-    socket && socket.on("connect_error", () => setAttempts(attempts + 1));
+    if (socket === null) return;
+    socket.on("connect_error", () => setAttempts(attempts + 1));
   }, [socket, attempts]);
 
   return (
     <div className="flex flex-col flex-grow">
       <div className="flex items-center p-1">
         <TextInput
-          readOnly={!!socket}
+          readOnly={status !== "idle"}
           defaultValue={host}
-          className={cn("w-32 px-1", { "bg-gray-200": !!socket })}
           onChange={setHost}
         />
         <div className="pl-1">Host</div>
       </div>
       <div className="flex items-center p-1">
         <TextInput
-          readOnly={!!socket}
+          readOnly={status !== "idle"}
           defaultValue={port}
-          className={cn("w-32 px-1", { "bg-gray-200": !!socket })}
           onChange={setPort}
         />
         <div className="pl-1">Port</div>
@@ -89,14 +91,10 @@ const App = () => {
           className="w-32"
           onClick={() => (socket ? setSocket() : setSocket(`${host}:${port}`))}
         >
-          {socket ? "Disconnect" : "Connect"}
+          {socket ? "disconnect" : "connect"}
         </Button>
       </div>
-      <div className="p-1">{message}</div>
-      <div
-        className={`p-1 ${attempts === 0 ? "text-gray-300" : "text-red-500"}`}
-        style={{ transition: "color 1s ease" }}
-      >{`Attempts ${attempts}`}</div>
+      <div className="p-1">{status}</div>
     </div>
   );
 };
