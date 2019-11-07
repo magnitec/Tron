@@ -53,7 +53,7 @@ const App = () => {
   const [host, setHost] = useState("localhost");
   const [port, setPort] = useState("8080");
   const [attempts, setAttempts] = useState(0);
-  const [socket, setSocket] = useSocket();
+  const [socket, setSocket] = useSocket(null);
 
   useEffect(() => {
     if (socket === null) return;
@@ -89,7 +89,9 @@ const App = () => {
       <div className="p-1">
         <Button
           className="w-32"
-          onClick={() => (socket ? setSocket() : setSocket(`${host}:${port}`))}
+          onClick={() =>
+            socket ? setSocket(null) : setSocket(`${host}:${port}`)
+          }
         >
           {socket ? "disconnect" : "connect"}
         </Button>
