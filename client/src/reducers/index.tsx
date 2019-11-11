@@ -13,17 +13,19 @@ type ActionUnion<
   A extends { [key: string]: (...args: any[]) => any }
 > = ReturnType<A[keyof A]>;
 
-function createAction<T extends string>(type: T): EmptyAction<T>;
-function createAction<T extends string, P extends ActionPayload>(
-  type: T,
-  payload: P
-): FilledAction<T, P>;
-function createAction<T extends string, P extends ActionPayload>(
+type CreateAction = {
+  <T extends string>(type: T): EmptyAction<T>;
+  <T extends string, P extends ActionPayload>(
+    type: T,
+    payload: P
+  ): FilledAction<T, P>;
+};
+
+const createAction: CreateAction = <T extends string, P extends ActionPayload>(
   type: T,
   payload?: P
-): EmptyAction<T> | FilledAction<T, P> {
-  return payload === undefined ? { type } : { type, ...payload };
-}
+): EmptyAction<T> | FilledAction<T, P> =>
+  payload === undefined ? { type } : { type, ...payload };
 
 export interface State {
   host: string;
