@@ -2,12 +2,10 @@ interface EmptyAction<T extends string> {
   type: T;
 }
 
-type ActionPayload = Omit<{}, "type">;
+type NoType<A extends object> = A extends { type: any } ? never : A;
 
-type FilledAction<T extends string, P extends Omit<{}, "type">> = EmptyAction<
-  T
-> &
-  P;
+type FilledAction<T extends string, P extends object> = EmptyAction<T> &
+  NoType<P>;
 
 type ActionUnion<
   A extends { [key: string]: (...args: any[]) => any }
@@ -15,15 +13,15 @@ type ActionUnion<
 
 type CreateAction = {
   <T extends string>(type: T): EmptyAction<T>;
-  <T extends string, P extends ActionPayload>(
+  <T extends string, P extends object>(
     type: T,
-    payload: P
+    payload: NoType<P>
   ): FilledAction<T, P>;
 };
 
-const createAction: CreateAction = <T extends string, P extends ActionPayload>(
+const createAction: CreateAction = <T extends string, P extends object>(
   type: T,
-  payload?: P
+  payload?: NoType<P>
 ): EmptyAction<T> | FilledAction<T, P> =>
   payload === undefined ? { type } : { type, ...payload };
 
