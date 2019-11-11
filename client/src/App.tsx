@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useReducer } from "react";
 import useSocket from "./utils/useSocket";
 import { Button, TextInput, RoomList } from "./components";
-import { reducer, defaultState } from "./reducers";
+import { reducer, defaultState, actions } from "./reducers";
 
 type ConnectionStatus = "idle" | "connecting" | "connected" | "reconnecting";
 
 const App = () => {
-  const [{ host, port, selected, rooms }, dispatch] = useReducer(
+  const [{ host, port, roomIndex, rooms }, dispatch] = useReducer(
     reducer,
     defaultState
   );
@@ -29,13 +29,13 @@ const App = () => {
 
   return (
     <div className="flex">
-      <RoomList {...{ rooms, selected, dispatch }} />
+      <RoomList {...{ rooms, roomIndex, dispatch }} />
       <div className="flex flex-col">
         <div className="flex items-center p-1">
           <TextInput
             readOnly={status !== "idle"}
             defaultValue={host}
-            onChange={host => dispatch({ type: "SET_HOST", host })}
+            onChange={host => dispatch(actions.setHost(host))}
           />
           <div className="pl-1">Host</div>
         </div>
@@ -43,7 +43,7 @@ const App = () => {
           <TextInput
             readOnly={status !== "idle"}
             defaultValue={port}
-            onChange={port => dispatch({ type: "SET_PORT", port })}
+            onChange={port => dispatch(actions.setPort(port))}
           />
           <div className="pl-1">Port</div>
         </div>
@@ -51,7 +51,7 @@ const App = () => {
         <div className="flex">
           <Button
             className="w-32 p-1"
-            disabled={selected < 0}
+            disabled={roomIndex === "none"}
             onClick={() =>
               socket ? setSocket(null) : setSocket(`${host}:${port}`)
             }

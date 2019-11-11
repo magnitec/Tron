@@ -1,22 +1,53 @@
+interface EmptyAction<T extends string> {
+  type: T;
+}
+
+type ActionPayload = Omit<{}, "type">;
+
+type FilledAction<T extends string, P extends Omit<{}, "type">> = EmptyAction<
+  T
+> &
+  P;
+
+type ActionUnion<
+  A extends { [key: string]: (...args: any[]) => any }
+> = ReturnType<A[keyof A]>;
+
+function createAction<T extends string>(type: T): EmptyAction<T>;
+function createAction<T extends string, P extends ActionPayload>(
+  type: T,
+  payload: P
+): FilledAction<T, P>;
+function createAction<T extends string, P extends ActionPayload>(
+  type: T,
+  payload?: P
+): EmptyAction<T> | FilledAction<T, P> {
+  return payload === undefined ? { type } : { type, ...payload };
+}
+
 export interface State {
   host: string;
   port: string;
   rooms: string[];
-  selected: number;
+  roomIndex: number | "none";
 }
 
 export const defaultState: State = {
   host: "localhost",
   port: "8080",
   rooms: [],
-  selected: -1
+  roomIndex: "none"
 };
 
-export type Action =
-  | { type: "SET_HOST"; host: string }
-  | { type: "SET_PORT"; port: string }
-  | { type: "ADD_ROOM"; room: string }
-  | { type: "SET_SELECTED"; selected: number };
+export const actions = {
+  setHost: (host: string) => createAction("SET_HOST", { host }),
+  setPort: (port: string) => createAction("SET_PORT", { port }),
+  addRoom: (room: string) => createAction("ADD_ROOM", { room }),
+  setRoomIndex: (index: number | "none") =>
+    createAction("SET_SELECTED", { index })
+};
+
+export type Action = ActionUnion<typeof actions>;
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -25,7 +56,7 @@ export const reducer = (state: State, action: Action): State => {
     case "SET_PORT":
       return { ...state, port: action.port };
     case "SET_SELECTED":
-      return { ...state, selected: action.selected };
+      return { ...state, roomIndex: action.index };
     case "ADD_ROOM":
       return { ...state, rooms: [...state.rooms, action.room] };
   }
