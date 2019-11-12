@@ -33,7 +33,7 @@ export const RoomList = ({ rooms, roomIndex, dispatch }: RoomListProps) => (
         dispatch(actions.addRoom("Room"));
       }}
     >
-      {"Add room"}
+      Add room
     </Button>
   </div>
 );
