@@ -8,21 +8,16 @@ interface ButtonProps {
   onClick: () => void;
 }
 
-export const Button = ({
-  className = "",
-  disabled = false,
-  ...props
-}: ButtonProps) => {
+export const Button = ({ className = "", ...props }: ButtonProps) => {
   const enabledStyle = "hover:bg-blue-200 bg-gray-300 border-black";
   const disabledStyle =
     "cursor-not-allowed bg-gray-500 text-gray-600 border-white";
   return (
     <div className={className}>
       <button
-        disabled={disabled}
         className={cn(
           "w-full border h-full",
-          disabled ? disabledStyle : enabledStyle
+          props.disabled ? disabledStyle : enabledStyle
         )}
         {...props}
       />
