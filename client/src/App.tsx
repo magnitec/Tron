@@ -52,9 +52,7 @@ const App = () => {
           <Button
             className="w-32 p-1"
             disabled={roomIndex === "none"}
-            onClick={() =>
-              socket ? setSocket(null) : setSocket(`${host}:${port}`)
-            }
+            onClick={() => setSocket(socket ? null : `${host}:${port}`)}
           >
             {socket ? "Disconnect" : "Connect"}
           </Button>
