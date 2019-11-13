@@ -1,29 +1,4 @@
-interface EmptyAction<T extends string> {
-  type: T;
-}
-
-type NoType<A extends object> = A extends { type: any } ? never : A;
-
-type FilledAction<T extends string, P extends object> = EmptyAction<T> &
-  NoType<P>;
-
-type ActionUnion<
-  A extends { [key: string]: (...args: any[]) => any }
-> = ReturnType<A[keyof A]>;
-
-type CreateAction = {
-  <T extends string>(type: T): EmptyAction<T>;
-  <T extends string, P extends object>(
-    type: T,
-    payload: NoType<P>
-  ): FilledAction<T, P>;
-};
-
-const createAction: CreateAction = <T extends string, P extends object>(
-  type: T,
-  payload?: NoType<P>
-): EmptyAction<T> | FilledAction<T, P> =>
-  payload === undefined ? { type } : { type, ...payload };
+import { createAction, DeriveActionType } from "./actions";
 
 export interface State {
   host: string;
@@ -47,7 +22,7 @@ export const actions = {
     createAction("SET_SELECTED", { index })
 };
 
-export type Action = ActionUnion<typeof actions>;
+export type Action = DeriveActionType<typeof actions>;
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
