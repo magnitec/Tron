@@ -23,8 +23,7 @@ const App = () => {
       try {
         const response = await fetch(`${rootURL}/rooms`, { method: "POST" });
         const { id } = await response.json();
-        dispatch(A.setStatus("joining"));
-        dispatch(A.setRoomID(id));
+        dispatch(A.setJoining(id));
       } catch (e) {
         cancel = null;
         setError(JSON.stringify(e.message));

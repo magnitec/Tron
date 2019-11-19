@@ -26,6 +26,7 @@ export const actions = {
   setPort: (port: string) => createAction("SET_PORT", { port }),
   setStatus: (status: ConnectionStatus) =>
     createAction("SET_STATUS", { status }),
+  setJoining: (roomID: string) => createAction("SET_JOINING", { roomID }),
   setRoomID: (roomID: string) => createAction("SET_ROOM_ID", { roomID })
 };
 
@@ -41,5 +42,7 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, roomID: action.roomID };
     case "SET_STATUS":
       return { ...state, status: action.status };
+    case "SET_JOINING":
+      return { ...state, status: "joining", roomID: action.roomID };
   }
 };
