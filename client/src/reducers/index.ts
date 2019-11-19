@@ -1,25 +1,32 @@
 import { createAction, DeriveActionType } from "./actions";
 
+type ConnectionStatus =
+  | "idle"
+  | "connecting"
+  | "joining"
+  | "connected"
+  | "reconnecting";
+
 export interface State {
   host: string;
   port: string;
-  rooms: string[];
-  roomIndex: number | "none";
+  status: ConnectionStatus;
+  roomID: string | null;
 }
 
 export const defaultState: State = {
   host: "localhost",
   port: "8080",
-  rooms: [],
-  roomIndex: "none"
+  status: "idle",
+  roomID: null
 };
 
 export const actions = {
   setHost: (host: string) => createAction("SET_HOST", { host }),
   setPort: (port: string) => createAction("SET_PORT", { port }),
-  addRoom: (room: string) => createAction("ADD_ROOM", { room }),
-  setRoomIndex: (index: number | "none") =>
-    createAction("SET_SELECTED", { index })
+  setStatus: (status: ConnectionStatus) =>
+    createAction("SET_STATUS", { status }),
+  setRoomID: (roomID: string) => createAction("SET_ROOM_ID", { roomID })
 };
 
 export type Action = DeriveActionType<typeof actions>;
@@ -30,9 +37,9 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, host: action.host };
     case "SET_PORT":
       return { ...state, port: action.port };
-    case "SET_SELECTED":
-      return { ...state, roomIndex: action.index };
-    case "ADD_ROOM":
-      return { ...state, rooms: [...state.rooms, action.room] };
+    case "SET_ROOM_ID":
+      return { ...state, roomID: action.roomID };
+    case "SET_STATUS":
+      return { ...state, status: action.status };
   }
 };
