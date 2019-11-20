@@ -1,25 +1,60 @@
 import React, { useState, useEffect, useReducer } from "react";
 import useSocket from "./utils/useSocket";
-import { Button, TextInput, RoomList } from "./components";
-import { reducer, defaultState, actions } from "./reducers";
-
-type ConnectionStatus = "idle" | "connecting" | "connected" | "reconnecting";
+import { Button, TextInput } from "./components";
+import { reducer, defaultState, actions as A } from "./reducers";
 
 const App = () => {
-  const [{ host, port, roomIndex, rooms }, dispatch] = useReducer(
+  const [{ host, port, status, roomID }, dispatch] = useReducer(
     reducer,
     defaultState
   );
-  const [status, setStatus] = useState<ConnectionStatus>("idle");
+
   const [attempts, setAttempts] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const [socket, setSocket] = useSocket(null);
+  const rootURL = `http://${host}:${port}`;
+
+  useEffect(() => {
+    if (status !== "connecting") return;
+    let cancel: (() => void) | null;
+
+    new Promise(async resolve => {
+      cancel = () => resolve();
+      try {
+        const response = await fetch(`${rootURL}/rooms`, { method: "POST" });
+        const { id } = await response.json();
+        dispatch(A.setJoining(id));
+      } catch (e) {
+        cancel = null;
+        setError(JSON.stringify(e.message));
+        dispatch(A.setStatus("idle"));
+      }
+    });
+
+    return () => {
+      if (cancel !== null) cancel();
+    };
+  }, [status, rootURL]);
+
+  useEffect(() => {
+    if (status !== "connecting" || error === null) return;
+    setError(null);
+  }, [status, error]);
+
+  useEffect(() => {
+    if (status !== "idle") return;
+    if (socket !== null) setSocket(null);
+  });
+
+  useEffect(() => {
+    if (roomID === null) return;
+    dispatch(A.setStatus("joining"));
+    setSocket(`${rootURL}/rooms/${roomID}`);
+  }, [rootURL, roomID, setSocket]);
 
   useEffect(() => {
     if (socket === null) return;
-    setStatus("connecting");
-    socket.on("connect", () => setStatus("connected"));
-
-    return () => setStatus("idle");
+    socket.on("connect", () => dispatch(A.setStatus("connected")));
   }, [socket]);
 
   useEffect(() => {
@@ -29,13 +64,12 @@ const App = () => {
 
   return (
     <div className="flex">
-      <RoomList {...{ rooms, roomIndex, dispatch }} />
       <div className="flex flex-col">
         <div className="flex items-center p-1">
           <TextInput
             readOnly={status !== "idle"}
             defaultValue={host}
-            onChange={host => dispatch(actions.setHost(host))}
+            onChange={host => dispatch(A.setHost(host))}
           />
           <div className="pl-1">Host</div>
         </div>
@@ -43,7 +77,7 @@ const App = () => {
           <TextInput
             readOnly={status !== "idle"}
             defaultValue={port}
-            onChange={port => dispatch(actions.setPort(port))}
+            onChange={port => dispatch(A.setPort(port))}
           />
           <div className="pl-1">Port</div>
         </div>
@@ -51,13 +85,16 @@ const App = () => {
         <div className="flex">
           <Button
             className="w-32 p-1"
-            disabled={roomIndex === "none"}
-            onClick={() => setSocket(socket ? null : `${host}:${port}`)}
+            onClick={() =>
+              dispatch(A.setStatus(status === "idle" ? "connecting" : "idle"))
+            }
           >
-            {socket ? "Disconnect" : "Connect"}
+            {status === "idle" ? "Connect" : "Disconnect"}
           </Button>
           <div className="p-1">{status}</div>
+          <div className="p-1">{roomID}</div>
         </div>
+        <div className="p-1 text-red-400">{error}</div>
       </div>
     </div>
   );
