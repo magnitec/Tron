@@ -1,18 +1,9 @@
+import uuidv4 from "uuid/v4";
 import { User } from "./user";
 
 export type Room = {
-  name: string;
-  password: string;
+  id: string;
   users: { [key: string]: User };
-};
-
-const generatePassword = (): string => {
-  const charset =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-  return [...Array(5)]
-    .map(() => charset.charAt(Math.random() * charset.length))
-    .join("");
 };
 
 export const join = (user: User, room: Room): Room => {
@@ -28,8 +19,7 @@ export const join = (user: User, room: Room): Room => {
   return { ...room, users: { ...users, [user.name]: user } };
 };
 
-export const create = (roomName: string): Room => ({
-  name: roomName,
-  password: generatePassword(),
+export const create = (): Room => ({
+  id: uuidv4(),
   users: {}
 });
