@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import io from "socket.io-client";
 
 const useSocket = (
@@ -14,7 +14,13 @@ const useSocket = (
       socket.close();
     };
   }, [socket]);
-  return [socket, uri => setSocket(uri !== null ? io(uri) : null)];
+
+  const setter = useCallback(
+    uri => setSocket(uri !== null ? io(uri) : null),
+    []
+  );
+
+  return [socket, setter];
 };
 
 export default useSocket;
