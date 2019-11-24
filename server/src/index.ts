@@ -18,11 +18,22 @@ const route = (request: IncomingMessage): HttpResponse<unknown> => {
           return handleCreateRoom();
       }
     }
+    case "OPTIONS": {
+      return [200, ""];
+    }
   }
   return [404, ""];
 };
 
+const setCorsHeaders = (response: ServerResponse) => {
+  response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader("Access-Control-Request-Method", "*");
+  response.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
+  response.setHeader("Access-Control-Allow-Headers", "*");
+};
+
 createServer((request, response) => {
+  setCorsHeaders(response);
   const [httpCode, data] = route(request);
 
   response.writeHead(httpCode);
