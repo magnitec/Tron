@@ -1,5 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import * as Room from "./room";
+import io from "socket.io";
 
 const port: number = 8080;
 
@@ -32,11 +33,17 @@ const setCorsHeaders = (response: ServerResponse) => {
   response.setHeader("Access-Control-Allow-Headers", "*");
 };
 
-createServer((request, response) => {
+const http = createServer((request, response) => {
   setCorsHeaders(response);
   const [httpCode, data] = route(request);
 
   response.writeHead(httpCode);
   response.write(JSON.stringify(data));
   response.end();
-}).listen(port);
+});
+
+io(http).on("connection", socket => {
+  console.log("socket connection on", socket);
+});
+
+http.listen(port);
