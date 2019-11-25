@@ -3,7 +3,7 @@ import io from "socket.io-client";
 
 type SocketSetter = {
   (uri: null): void;
-  (uri: string, roomID: string): void;
+  (uri: string, options?: SocketIOClient.ConnectOpts): void;
 };
 
 const useSocket = (
@@ -21,16 +21,7 @@ const useSocket = (
   }, [socket]);
 
   const setter = useCallback(
-    (uri: string | null, roomID?: string) =>
-      setSocket(
-        uri !== null
-          ? io(uri, {
-              query: {
-                roomID
-              }
-            })
-          : null
-      ),
+    (uri: string | null) => setSocket(uri !== null ? io(uri) : null),
     []
   );
 

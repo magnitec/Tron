@@ -8,6 +8,7 @@ type ConnectionStatus =
   | "reconnecting";
 
 export interface State {
+  name: string;
   host: string;
   port: string;
   status: ConnectionStatus;
@@ -15,6 +16,7 @@ export interface State {
 }
 
 export const defaultState: State = {
+  name: "pato",
   host: "localhost",
   port: "8080",
   status: "idle",
@@ -27,13 +29,16 @@ export const actions = {
   setStatus: (status: ConnectionStatus) =>
     createAction("SET_STATUS", { status }),
   setJoining: (roomID: string) => createAction("SET_JOINING", { roomID }),
-  setRoomID: (roomID: string) => createAction("SET_ROOM_ID", { roomID })
+  setRoomID: (roomID: string) => createAction("SET_ROOM_ID", { roomID }),
+  setName: (name: string) => createAction("SET_NAME", { name })
 };
 
 export type Action = DeriveActionType<typeof actions>;
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
+    case "SET_NAME":
+      return { ...state, name: action.name };
     case "SET_HOST":
       return { ...state, host: action.host };
     case "SET_PORT":
