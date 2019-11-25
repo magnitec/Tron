@@ -1,9 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import io from "socket.io-client";
 
+type SocketSetter = {
+  (uri: null): void;
+  (uri: string, token: string): void;
+};
+
 const useSocket = (
   uri: string | null
-): [SocketIOClient.Socket | null, (uri: string | null) => void] => {
+): [SocketIOClient.Socket | null, SocketSetter] => {
   const [socket, setSocket] = useState<SocketIOClient.Socket | null>(
     uri !== null ? io(uri) : null
   );
@@ -16,7 +21,16 @@ const useSocket = (
   }, [socket]);
 
   const setter = useCallback(
-    uri => setSocket(uri !== null ? io(uri) : null),
+    (uri: string | null, token?: string) =>
+      setSocket(
+        uri !== null
+          ? io(uri, {
+              query: {
+                token
+              }
+            })
+          : null
+      ),
     []
   );
 

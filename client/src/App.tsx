@@ -49,7 +49,7 @@ const App = () => {
   useEffect(() => {
     if (roomID === null) return;
     dispatch(A.setStatus("joining"));
-    setSocket(`${rootURL}/rooms/${roomID}`);
+    setSocket(`${rootURL}/rooms/${roomID}`, roomID);
   }, [rootURL, roomID, setSocket]);
 
   useEffect(() => {
