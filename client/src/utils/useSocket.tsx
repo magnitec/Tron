@@ -7,10 +7,10 @@ type SocketSetter = {
 };
 
 const useSocket = (
-  uri: string | null
+  uri: string | null, options?: SocketIOClient.ConnectOpts
 ): [SocketIOClient.Socket | null, SocketSetter] => {
   const [socket, setSocket] = useState<SocketIOClient.Socket | null>(
-    uri !== null ? io(uri) : null
+    uri !== null ? io(uri, options) : null
   );
   useEffect(() => {
     return () => {
@@ -21,7 +21,7 @@ const useSocket = (
   }, [socket]);
 
   const setter = useCallback(
-    (uri: string | null) => setSocket(uri !== null ? io(uri) : null),
+    (uri: string | null, options?: SocketIOClient.ConnectOpts) => setSocket(uri !== null ? io(uri, options) : null),
     []
   );
 
