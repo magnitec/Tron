@@ -7,24 +7,27 @@ type ConnectionStatus =
   | "connected"
   | "reconnecting";
 
-export interface State {
+export type State = {
   name: string;
   host: string;
   port: string;
   status: ConnectionStatus;
   roomID: string | null;
-}
+  error: string | null;
+};
 
 export const defaultState: State = {
   name: "pato",
   host: "localhost",
   port: "8080",
   status: "idle",
-  roomID: null
+  roomID: null,
+  error: null
 };
 
 export const actions = {
   setHost: (host: string) => createAction("SET_HOST", { host }),
+  setError: (err: string | null) => createAction("SET_ERROR", { err }),
   setPort: (port: string) => createAction("SET_PORT", { port }),
   setStatus: (status: ConnectionStatus) =>
     createAction("SET_STATUS", { status }),
@@ -49,5 +52,7 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, status: action.status };
     case "SET_JOINING":
       return { ...state, status: "joining", roomID: action.roomID };
+    case "SET_ERROR":
+      return { ...state, status: "idle", error: action.err };
   }
 };
