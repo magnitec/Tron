@@ -51,7 +51,7 @@ export const JoinRoom = ({
 
   return (
     <div>
-      <div>{roomID}</div>
+      <div>{`${rootURL}/${roomID}`}</div>
       <div>{message}</div>
     </div>
   );
